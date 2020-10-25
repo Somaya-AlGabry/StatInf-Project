@@ -1,0 +1,82 @@
+---
+title: 'Part 1: Simulation Exercise Instructions'
+author: "Somaya AlGabry"
+date: "23/10/2020"
+output:
+  html_document:
+    df_print: paged
+  word_document: default
+  pdf_document: default
+---
+In this project I will investigate the exponential distribution in R and compare it with the Central Limit Theorem. The exponential distribution can be simulated in R with rexp(n, lambda) where lambda is the rate parameter. The mean of exponential distribution is 1/lambda and the standard deviation is also 1/lambda
+
+```{r setup, include=TRUE}
+set.seed(1)
+lambda= 0.2
+n= 40
+mns = NULL
+for (i in 1 : 1000) {
+  mns= c(mns, mean( rexp(n, lambda))) 
+}
+```
+# 1. Show the sample mean and compare it to the theoretical mean of the distribution.
+
+``` {r mean, include= TRUE, echo= TRUE}
+
+# Sample Mean:
+SampleMean <- mean(mns)
+SampleMean
+# Theoretical Mean:
+TheoreticalMean<- 1/lambda
+TheoreticalMean
+# Difference between theoretical and sample mean:
+TheoreticalMean - SampleMean
+# Visualization:
+hist(mns, xlab = "mean", main = "Comparison between the Sample Mean and the theoretical mean ")
+abline(v= TheoreticalMean, col= "blue" )
+abline(v= SampleMean, col= "red")
+```
+
+
+# 2. show how variable the sample is (via variance) and compare it to the theoretical variance of the distribution.
+
+``` {r varianvce, include= TRUE, echo=TRUE}
+# Sample Variance:
+SampleVar <- var(mns)
+SampleVar
+# Theoretical Variance:
+TheoreticalVar <- (1/lambda^2)/n
+TheoreticalVar
+# Difference between sample and theoretical variance:
+TheoreticalVar - SampleVar
+
+```
+
+# 3. Show that the distribution is approximately normal.
+I used three methods:
+
+1. Histogram: there is a very little devition of the sample distribution (gray) from the theoretical bell curve of the normal distribution (red).
+
+2. Box Plot: The symmetry indicates normal distribution.
+
+3. QQ Plot: The quantiles of the variable are in line with the theoretical normal quantiles making a straight line, this is telling us we have a normal distribution.
+
+``` {r distibution, include= TRUE, echo= TRUE}
+#Histogram:
+
+hist(mns, main = "Distribution of samples", xlab = "means", ylab = "density", probability = TRUE, breaks = n)
+x <- seq(min(mns), max(mns), length=100)
+curve(dnorm(x, mean=1/lambda, sd=(1/lambda/sqrt(n)) ), col="red", lwd=2, add=TRUE, yaxt="n")
+
+#Box Plot:
+
+boxplot(mns)
+
+#QQ Plot:
+
+qqnorm(mns)
+qqline(mns)
+```
+
+
+
