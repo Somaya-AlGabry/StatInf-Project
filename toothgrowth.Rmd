@@ -1,0 +1,79 @@
+---
+title: "Tooth growth analysis"
+author: "Somaya AlGabry"
+date: "27/10/2020"
+output: pdf_document
+---
+This project analyzes the ToothGrowth data which studies the effect of Vitamin C on the tooth growth of guinea pig.
+
+# 1. Load the ToothGrowth data and perform some basic exploratory data analyses
+
+```{r data inspection, include=TRUE, echo= TRUE}
+data(ToothGrowth)
+head(ToothGrowth)
+str(ToothGrowth)
+```
+
+ToothGrowth is a data frame with 60 observations on 3 variables:
+
+1. **len**: numeric tooth length.
+
+2. **supp**: supplement type. (VC: ascorbic acid or OJ: Orange Juice).
+
+3. **dose**: numeric dose  (0.5, 1 or 2 mg/day).
+
+# 2. Provide a basic summary of the data
+
+``` {r sum, include= TRUE, echo= TRUE}
+summary(ToothGrowth)
+boxplot(ToothGrowth$len~ ToothGrowth$supp, main="Tooth Length by Supplement Type", xlab="Supplement Type", ylab = "Tooth Length", col= c("darkmagenta", "darkcyan"))
+boxplot(ToothGrowth$len ~ ToothGrowth$dose , main="Tooth Length by dose", xlab = "Dose", ylab = "Tooth Length", col= c("yellow", "orange", "brown"))
+boxplot(ToothGrowth$len ~  interaction(ToothGrowth$dose, ToothGrowth$supp) , main="Tooth Length by dose", xlab = "Dose", ylab = "Tooth Length", col= c("yellow", "orange", "brown"))
+```
+**According to the box plots above, there is apparently  difference in the effect (Toothlength) according to the supplement type. Tooth length mean in  guinea pigs receiving Orange Juice is higher than those receiving ascorbic acid. However, in the high dose (2 mg), the difference is small.
+The tooth length also increases as the dose increases.**
+
+# 3. Use confidence intervals and/or hypothesis tests to compare
+# tooth growth by supp and dose. 
+```{r compare, include=TRUE, echo=TRUE}
+#t-test by supplement type:
+OJ <- subset(ToothGrowth, supp=="OJ")
+VC <- subset(ToothGrowth, supp=="VC")
+t.test(OJ$len, VC$len, paired = FALSE)$p.value
+##if alpha = 0.05, p value > alpha, we accept null
+##hypothesis(There is no significance difference in tooth length
+##between the two supplement types).
+
+#t-test by supplement type for each dose separately: 
+##dose=0.5 mg/day:
+OJ0.5 <- subset(ToothGrowth, supp=="OJ" & dose==0.5)
+VC0.5 <- subset(ToothGrowth, supp=="VC" & dose==0.5)
+t.test(OJ0.5$len, VC0.5$len, paired= FALSE)$p.value
+##if alpha = 0.5, p value < alpha, we reject null hypothesis 
+##(At dose = 0.5 mg / day, tooth length in guinea pigs receiving
+##Orange Juice is significantly higher than tooth length in those
+##receiving ascorbic acid )
+
+##dose=1 mg/day:
+OJ1 <- subset(ToothGrowth, supp=="OJ" & dose==1)
+VC1 <- subset(ToothGrowth, supp=="VC" & dose==1)
+t.test(OJ1$len, VC1$len, paired= FALSE)$p.value
+##if alpha = 0.5, p value < alpha, we reject null hypothesis 
+##(At dose = 1 mg / day, tooth length in guinea pigs receiving
+##Orange Juice is significantly higher than tooth length in those
+##receiving ascorbic acid )
+
+##dose=2 mg/day:
+OJ2 <- subset(ToothGrowth, supp=="OJ" & dose==2)
+VC2 <- subset(ToothGrowth, supp=="VC" & dose==2)
+t.test(OJ2$len, VC2$len, paired= FALSE)$p.value
+##if alpha = 0.5, p value > alpha, we accept null hypothesis 
+##(At dose = 2 mg / day, There is no significance difference in
+##tooth length between the two supplement types )
+```
+
+# Conclusion:
+**The hypothesis test confirmed what we included from the plot, the tooth length is higher with orange juice at low doses (0.5 or 1 mg/day), but in high dose (2 mg/day) there is no significance difference between the twon supplement types.**
+
+
+
